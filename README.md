@@ -1,2 +1,2 @@
 # learning
-learning aim at offer
+learning in aim at offer
