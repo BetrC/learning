@@ -14,39 +14,61 @@ struct RandomListNode {
 
 class Solution {
 public:
-    /*
-        1、复制每个节点，如：复制节点A得到A1，将A1插入节点A后面
-        2、遍历链表，A1->random = A->random->next;
-        3、将链表拆分成原链表和复制后的链表
-    */
+    RandomListNode *Clone(RandomListNode *pHead) {
 
-    RandomListNode* Clone(RandomListNode* pHead)
-    {
-        if(!pHead) return NULL;
-        RandomListNode *currNode = pHead;
-        while(currNode){
-            RandomListNode *node = new RandomListNode(currNode->label);
-            node->next = currNode->next;
-            currNode->next = node;
-            currNode = node->next;
+        if (pHead == NULL) {
+            return NULL;
         }
-        currNode = pHead;
-        while(currNode){
-            RandomListNode *node = currNode->next;
-            if(currNode->random){
-                node->random = currNode->random->next;
+
+        RandomListNode *newHead = NULL;
+        RandomListNode *oldHead = pHead;
+
+        cloneNext(oldHead);
+        oldHead = pHead;
+        cloneRandom(oldHead);
+        oldHead = pHead;
+        return breakList(oldHead);
+    }
+
+    void cloneNext(RandomListNode *node) {
+
+
+        while (node != NULL) {
+            RandomListNode *newNode = new RandomListNode(node->label);
+
+            newNode->next = node->next;
+            node->next = newNode;
+
+            node = newNode->next;
+        }
+
+    }
+
+    void cloneRandom(RandomListNode *node) {
+
+        while (node != NULL) {
+            RandomListNode *newNode = node->next;
+
+            if (node->random) {
+                newNode->random = node->random->next;
             }
-            currNode = node->next;
+
+            node = newNode->next;
+
         }
-        //拆分
-        RandomListNode *pCloneHead = pHead->next;
+    }
+
+    RandomListNode *breakList(RandomListNode *node) {
+        RandomListNode *newHead = node->next;
+
         RandomListNode *tmp;
-        currNode = pHead;
-        while(currNode->next){
-            tmp = currNode->next;
-            currNode->next =tmp->next;
-            currNode = tmp;
+
+        // clever
+        while (node->next) {
+            tmp = node->next;
+            node->next = tmp->next;
+            node = tmp;
         }
-        return pCloneHead;
+        return newHead;
     }
 };
